@@ -7,6 +7,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { DynamicStructuredTool } from "@langchain/core/tools";
+import medicineData from "./medicine_data.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -36,26 +37,9 @@ const MedicinePrescribeTool = new DynamicStructuredTool({
     symptoms: z.string().describe("The symptom to analyze (e.g. fever, cough)"),
   }),
   func: async ({ symptoms }) => {
-    const medicines = {
-      cold: "Paracetamol",
-      cough: "Dextromethorphan",
-      fever: "Paracetamol",
-      headache: "Ibuprofen",
-      migraine: "Sumatriptan",
-      "sore throat": "Azithromycin",
-      tonsillitis: "Amoxicillin",
-      sinusitis: "Amoxicillin-Clavulanate",
-      pneumonia: "Azithromycin",
-      bronchitis: "Amoxicillin",
-      asthma: "Salbutamol",
-      allergy: "Cetirizine",
-      diabetes: "Metformin",
-      hypertension: "Amlodipine",
-      acidity: "Omeprazole",
-      diarrhea: "ORS",
-      malaria: "Artemether-Lumefantrine",
-      typhoid: "Cefixime",
-    };
+    const medicines = medicineData;
+    if (!symptoms)
+      return `Please provide a symptom to analyze.`;
 
     const med = medicines[symptoms.toLowerCase()];
     if (!med)
